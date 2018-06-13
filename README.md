@@ -1,5 +1,5 @@
-# my OWN FE Framework
-My learning environment for building my own FE Framework.
+# Introduction
+Learning environment for building my own FE Framework.
 
 ## Features
 - [x] FE router
