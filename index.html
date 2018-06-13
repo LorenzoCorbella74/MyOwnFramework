@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        nav ul {
+            margin: 0;
+            padding: 0;
+            list-style-type: none;
+        }
+
+        nav ul li {
+            display: inline-block;
+            zoom: 1;
+        }
+    </style>
+</head>
+
+<body>
+    <section>
+        <h3>My own FE Framework</h3>
+        <p>My learning environment for building my own FE Framework.</p>
+        <ul>
+            <li>Router</li>
+            <li>componenti: template + script(inline o a parte) + lifecycle functions</li>
+            <li>...dependency injection??</li>
+            <li>...one and two way binding??</li>
+        </ul>
+        <!-- <h2>Esempio di router con Hashchange Event</h2>
+        <h4>SOURCE:
+            <a href="https://www.youtube.com/watch?v=1g1fICJR8YQ">Implementing a router with HashchangeEvent</a>
+        </h4> -->
+    </section>
+    <hr>
+    <nav>
+        <ul>
+            <li>
+                <a href="#page1">Page 1</a>
+            </li>
+            <li>
+                <a href="#page2">Page 2</a>
+            </li>
+            <li>
+                <a href="#page3">Page 3</a>
+            </li>
+        </ul>
+    </nav>
+    <section id="template"></section>
+    <!-- router-outlet !!!! -->
+
+    <script>
+        class Router {
+
+            constructor(start) {
+                window.addEventListener('hashchange', e => this.onRouteChange(e));
+                this.template = document.querySelector('#template');
+                this.cache = {}; // cache per script element
+                // carica il template passato
+                if (start) {
+                    this.loadTemplate(start);
+                    this.currentView = start;
+                }
+            }
+
+            onRouteChange(e) {
+                const hasLocation = window.location.hash.substring(1);
+                // console.log(hasLocation, e);
+                this.loadTemplate(hasLocation);
+            }
+
+            loadTemplate(uri) {
+                const contentUri = `${uri}.html`;
+                if (this.currentView != uri) {
+                    if (this.cache[this.currentView]) {
+                        window[this.currentView].onDestroy();
+                    }
+                    console.log(`Page changed: Old: ${this.currentView} - New: ${uri}`);
+                    this.currentView = uri;
+                    if (this.cache[uri]) {
+                        window[uri].onStart();
+                    }
+                }
+                fetch(contentUri)
+                    .then(r => r.text())
+                    .then(htmlString => {
+                        // console.log(` template for ${uri}.html`, htmlString);
+                        var re = /<script\b[^>]*>([\s\S]*?)<\/script>/gm;
+                        var match;
+                        while (match = re.exec(htmlString)) {
+                            if (!this.cache[uri]) {
+                                // full match is in match[0], whereas captured groups are in ...[1], ...[2], etc.
+                                var head = document.getElementsByTagName("head")[0] || document.documentElement,
+                                    script = document.createElement('script');
+                                script.type = "text/javascript";
+                                var src = /<script.*?src="(.*?)"/.exec(match[0]) || [];
+                                // se il template ha uno script con un src
+                                if (src[1]) {
+                                    fetch(src[1])
+                                        .then(r => r.text())
+                                        .then(content => {
+                                            this.addScriptToHtml(script, content, uri);
+                                        });
+                                    // se il template ha uno script tag
+                                } else {
+                                    this.addScriptToHtml(script, match[1], uri)
+                                }
+                            }
+                        }
+                        // aggiorna il template nel
+                        this.updateTemplateinView(htmlString);
+                    });
+            }
+
+
+            addScriptToHtml(script, scriptStr, uri) {
+                try {
+                    script.appendChild(document.createTextNode(scriptStr)); // doesn't work on ie...
+                } catch (e) {
+                    script.text = data; // IE has funky script nodes
+                }
+                // document.head.appendChild(script); //or something of the likes
+                document.body.appendChild(script); //or something of the likes
+
+                // si esegue per la prima volta se esiste
+                if (window[uri].onStart) {
+                    window[uri].onStart();
+                }
+                // cache dell'elemento script javascript
+                this.cache[uri] = script;
+            }
+
+            updateTemplateinView(content) {
+                // http://garystorey.com/2017/02/27/three-ways-to-create-dom-elements-without-jquery/
+                this.template.innerHTML = content;
+            }
+        }
+
+        // si istanzia il router con la pagina iniziale
+        var app = new Router('page1');
+    </script>
+
+</body>
+
+</html>
