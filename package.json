@@ -1,0 +1,26 @@
+{
+  "name": "own_framework",
+  "version": "1.0.0",
+  "description": "Learning environment for building my own FE Framework.",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LorenzoCorbella74/MyOwnFramework.git"
+  },
+  "keywords": [
+    "javascript"
+  ],
+  "author": "Lorenzo Corbella",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/LorenzoCorbella74/MyOwnFramework/issues"
+  },
+  "homepage": "https://github.com/LorenzoCorbella74/MyOwnFramework#readme",
+  "dependencies": {
+    "express": "^4.16.3",
+    "morgan": "^1.9.0"
+  }
+}
