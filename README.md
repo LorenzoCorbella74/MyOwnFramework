@@ -11,7 +11,7 @@ Learning environment for building my own FE Framework.
 - [ ] build system
 
 ## Getting Started
-Eseguire il file `index.html` tramite live server
+Eseguire `npm start` 
 
 
 ## Built With
